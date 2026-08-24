@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Signals Pro</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🏆 Gold Signals Pro</h2>
+            <p class="subtitle">تحليلات وإشارات الذهب الحية</p>
+        </div>
+
+        <!-- قسم اختيار الخطة -->
+        <div id="subscription-section" class="card">
+            <h3>اختر خطة الاشتراك المناسبة</h3>
+            
+            <div class="plan-card" onclick="selectPlan('أسبوعي', 5, 7, this)">
+                <div class="plan-info">
+                    <h4>خطة أسبوعية ⏱</h4>
+                    <p class="desc">تجربة لمدة 7 أيام</p>
+                </div>
+                <div class="price">5$ <span>USDT</span></div>
+            </div>
+
+            <div class="plan-card recommended" onclick="selectPlan('15 يوم', 20, 15, this)">
+                <span class="badge">الأكثر طلباً🔥</span>
+                <div class="plan-info">
+                    <h4>خطة 15 يوم ⚡️</h4>
+                    <p class="desc">تغطية شاملة لأسرار السوق</p>
+                </div>
+                <div class="price">20$ <span>USDT</span></div>
+            </div>
+
+            <div class="plan-card" onclick="selectPlan('شهري', 25, 30, this)">
+                <div class="plan-info">
+                    <h4>خطة شهرية 🏆</h4>
+                    <p class="desc">30 يوم مع تحليلات وتوصيات حية</p>
+                </div>
+                <div class="price">25$ <span>USDT</span></div>
+            </div>
+
+            <!-- تفاصيل الدفع والتحويل -->
+            <div id="payment-details" class="payment-box" style="display:none;">
+                <h4>تفاصيل التحويل (USDT - BEP20):</h4>
+                <p class="instruction">يرجى نسخ العنوان وتحويل المبلغ عبر شبكة <b>BNB Smart Chain (BEP20)</b>:</p>
+                
+                <div class="wallet-box">
+                    <span id="wallet-addr">0x033fD755077Bf812FC49d9f1c3339D060b1e242c</span>
+                    <button onclick="copyWallet()" class="btn-copy">📋 نسخ</button>
+                </div>
+
+                <button onclick="confirmPayment()" class="btn-confirm">✅ تم الدفع والتحويل</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
