@@ -37,6 +37,7 @@
             margin-bottom: 16px;
             position: relative;
             cursor: pointer;
+            transition: 0.3s;
         }
 
         .plan-card.active {
@@ -92,6 +93,24 @@
 
         .referral-box {
             background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-top: 12px;
+        }
+
+        /* حاوية الصورة المتفاعلة 3D */
+        .card-3d-container {
+            perspective: 1000px;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .img-3d {
+            width: 100%;
+            max-height: 240px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid var(--accent-gold);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .bottom-nav {
@@ -157,11 +176,16 @@
         <h3 style="text-align: center;">إشارات الذهب الحية (XAUUSD) 📈</h3>
         <div style="background: var(--card-bg); padding: 15px; border-radius: 16px; text-align: center; margin-top: 15px;">
             
-            <!-- للمستخدم غير المفعل: تظهر صورة الشارت الذهبي الاحترافي كمعاينة -->
+            <!-- للمستخدم غير المفعل: تظهر الصورة المضافة مع تأثير 3D تفاعلي -->
             <div id="locked-signals">
                 <p style="color: var(--accent-gold); font-weight: bold; margin-bottom: 10px;">📉 معاينة شارت الذهب المباشر</p>
-                <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&auto=format&fit=crop&q=80" alt="Gold Chart" style="width: 100%; max-height: 220px; border-radius: 10px; object-fit: cover; border: 1px solid var(--accent-gold);">
-                <p style="color: #ef4444; margin-top: 12px;">⚠️ اشتراكك غير مفعل حالياً لتلقي الصفقات الحية.</p>
+                
+                <div class="card-3d-container" id="tiltCard">
+                    <!-- رابط صورتك الجديدة -->
+                    <img src="image.png" alt="Gold 3D Clock Chart" class="img-3d" id="targetImg">
+                </div>
+
+                <p style="color: #ef4444; margin-top: 12px;">⚠️ اشتراكك غير مفعل حالياً لتلقي الصفقات الحية. يرجى تفعيل حسابك من قسم (حسابي).</p>
             </div>
 
             <!-- للمستخدم المفعل: تختفي الصورة وتظهر الإشارات الحقيقية -->
@@ -180,9 +204,16 @@
     <div id="tab-account" class="tab-content">
         <h3 style="text-align: center;">تفاصيل الحساب 👤</h3>
         <div style="background: var(--card-bg); padding: 20px; border-radius: 16px; margin-top: 16px;">
-            <p>حالة الاشتراك: <strong id="acc-status" style="color: #ef4444;">غير مفعل</strong></p>
+            <p>حالة الاشتراك: <strong id="acc-status" style="color: #ef4444;">غير مفعل ❌</strong></p>
             <p>المعرف الخاص بك (ID): <strong id="user-id">جار التحميل...</strong></p>
             
+            <!-- قسم إدخال كود التفعيل -->
+            <div style="background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-top: 15px;">
+                <p style="font-size: 13px; color: var(--accent-gold); margin: 0 0 6px 0; font-weight: bold;">🔑 أدخل كود التفعيل الخاص بك:</p>
+                <input type="text" id="activation-code" placeholder="أدخل الكود هنا..." style="width: 100%; background: #1e293b; color: white; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 13px; box-sizing: border-box; text-align: center;">
+                <button onclick="activateAccount()" style="width: 100%; background: var(--green-btn); color: white; border: none; padding: 8px; border-radius: 6px; margin-top: 8px; font-size: 13px; font-weight: bold; cursor: pointer;">تفعيل الحساب الآن ⚡</button>
+            </div>
+
             <div class="referral-box">
                 <p style="font-size: 13px; color: var(--accent-gold); margin: 0 0 6px 0; font-weight: bold;">🔗 رابط الإحالة الخاص بك:</p>
                 <input type="text" id="ref-link" readonly style="width: 100%; background: #1e293b; color: white; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 11px; box-sizing: border-box;" value="جاري الإنشاء...">
@@ -205,6 +236,7 @@
         tg.expand();
 
         const BOT_USERNAME = "Signalpro8_bot";
+        const ADMIN_SECRET_CODE = "GOLD-2026"; // هذا هو كود التفعيل الافتراضي الذي ترسله للمشتركين
 
         let userId = tg.initDataUnsafe?.user?.id || "12345678";
         let userName = tg.initDataUnsafe?.user?.first_name || "مستخدم";
@@ -242,7 +274,27 @@
                 alert("⚠️ يرجى إرفاق صورة لقطة الشاشة (الإيصال) قبل التأكيد!");
                 return;
             }
-            alert("✅ تم إرسال إيصال الدفع بنجاح! سيتم تفعيل حسابك فور مراجعة التحويل من قبل الإدارة.");
+
+            let telegramUrl = `https://t.me/${BOT_USERNAME}?start=pay_${userId}`;
+            alert("✅ سيتم توجيهك الآن لمحادثة البوت. يرجى إرسال صورة الإيصال هناك لتستلم كود التفعيل.");
+            tg.openTelegramLink(telegramUrl);
+        }
+
+        // دالة تفعيل الحساب عبر الكود
+        function activateAccount() {
+            let enteredCode = document.getElementById('activation-code').value.trim();
+            if (enteredCode === ADMIN_SECRET_CODE) {
+                // تفعيل واجهة المستخدم
+                document.getElementById('acc-status').innerText = "مفعل نشط ✅";
+                document.getElementById('acc-status').style.color = "var(--green-btn)";
+                
+                document.getElementById('locked-signals').style.display = "none";
+                document.getElementById('unlocked-signals').style.display = "block";
+
+                alert("🎉 تهانينا! تم تفعيل حسابك بنجاح. انتقل لتبويب Signals لرؤية الصفقات الحية.");
+            } else {
+                alert("❌ كود التفعيل غير صحيح، يرجى التأكد من الكود المرسل من الإدارة.");
+            }
         }
 
         function switchTab(tabName, navElement) {
@@ -251,6 +303,48 @@
             document.getElementById('tab-' + tabName).classList.add('active');
             navElement.classList.add('active');
         }
+
+        // تأثير الحركة ثلاثية الأبعاد (3D Tilt Effect) للصورة
+        const card = document.getElementById('tiltCard');
+        const img = document.getElementById('targetImg');
+
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = -((y - centerY) / centerY) * 15;
+            const rotateY = ((x - centerX) / centerX) * 15;
+            
+            img.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            img.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+        });
+
+        // دعم اللمس للأجهزة المحمولة
+        card.addEventListener('touchmove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = -((y - centerY) / centerY) * 10;
+            const rotateY = ((x - centerX) / centerX) * 10;
+            
+            img.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+        });
+
+        card.addEventListener('touchend', () => {
+            img.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+        });
     </script>
 </body>
 </html>
