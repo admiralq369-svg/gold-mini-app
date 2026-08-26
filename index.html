@@ -25,22 +25,9 @@
             direction: rtl;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .header h1 {
-            color: var(--accent-gold);
-            margin: 0 0 8px 0;
-            font-size: 24px;
-        }
-
-        .header p {
-            color: var(--text-muted);
-            margin: 0;
-            font-size: 14px;
-        }
+        .header { text-align: center; margin-bottom: 24px; }
+        .header h1 { color: var(--accent-gold); margin: 0 0 8px 0; font-size: 24px; }
+        .header p { color: var(--text-muted); margin: 0; font-size: 14px; }
 
         .plan-card {
             background: var(--card-bg);
@@ -50,7 +37,6 @@
             margin-bottom: 16px;
             position: relative;
             cursor: pointer;
-            transition: all 0.2s ease;
         }
 
         .plan-card.active {
@@ -59,41 +45,14 @@
         }
 
         .badge {
-            position: absolute;
-            top: -10px;
-            left: 16px;
-            background: var(--accent-gold);
-            color: #000;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 2px 10px;
-            border-radius: 12px;
+            position: absolute; top: -10px; left: 16px;
+            background: var(--accent-gold); color: #000;
+            font-size: 12px; font-weight: bold; padding: 2px 10px; border-radius: 12px;
         }
 
-        .plan-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .plan-desc {
-            color: var(--text-muted);
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
-        .plan-price {
-            font-size: 22px;
-            font-weight: bold;
-            color: var(--accent-gold);
-        }
-
-        .old-price {
-            text-decoration: line-through;
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-left: 8px;
-        }
+        .plan-title { font-size: 18px; font-weight: bold; margin-bottom: 4px; }
+        .plan-desc { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; }
+        .plan-price { font-size: 22px; font-weight: bold; color: var(--accent-gold); }
 
         .payment-box {
             background: var(--card-bg);
@@ -102,98 +61,49 @@
             margin-top: 20px;
         }
 
-        .wallet-title {
-            font-size: 14px;
-            color: var(--accent-gold);
-            margin-bottom: 8px;
-            font-weight: bold;
+        .wallet-title { font-size: 14px; color: var(--accent-gold); margin-bottom: 8px; font-weight: bold; }
+        .wallet-address {
+            background: #0f172a; border: 1px dashed #475569;
+            padding: 12px; border-radius: 8px; word-break: break-all;
+            font-family: monospace; font-size: 12px;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .wallet-address {
+        .file-input-box {
+            margin-top: 16px;
             background: #0f172a;
-            border: 1px dashed #475569;
-            padding: 12px;
+            border: 1px solid #334155;
+            padding: 10px;
             border-radius: 8px;
-            word-break: break-all;
-            font-family: monospace;
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
         }
 
         .btn-pay {
-            width: 100%;
-            background: var(--green-btn);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            margin-top: 16px;
-            cursor: pointer;
+            width: 100%; background: var(--green-btn); color: white;
+            border: none; padding: 14px; border-radius: 12px;
+            font-size: 16px; font-weight: bold; margin-top: 16px; cursor: pointer;
         }
 
-        .referral-card {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            border: 1px solid var(--accent-gold);
-            border-radius: 16px;
-            padding: 16px;
-            margin-top: 16px;
+        .btn-channel {
+            display: block; width: 100%; background: #2563eb; color: white;
+            text-align: center; text-decoration: none; padding: 12px; border-radius: 10px;
+            font-weight: bold; margin-top: 15px; box-sizing: border-box;
         }
 
-        .progress-bar {
-            background: #334155;
-            border-radius: 10px;
-            height: 10px;
-            width: 100%;
-            margin: 12px 0;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            background: var(--accent-gold);
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
+        .referral-box {
+            background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-top: 12px;
         }
 
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #1e293b;
-            border-top: 1px solid #334155;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            z-index: 1000;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #1e293b; border-top: 1px solid #334155;
+            display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000;
         }
 
-        .nav-item {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .nav-item.active {
-            color: var(--accent-gold);
-            font-weight: bold;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
+        .nav-item { color: var(--text-muted); font-size: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .nav-item.active { color: var(--accent-gold); font-weight: bold; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body>
@@ -203,194 +113,171 @@
         <p>تحليلات وإشارات الذهب الحية</p>
     </div>
 
-    <!-- تبويب الباقات -->
+    <!-- قسم الباقات والدفع -->
     <div id="tab-plans" class="tab-content active">
         <h3 style="text-align: center; margin-bottom: 16px;">اختر خطة الاشتراك المناسبة</h3>
 
-        <div id="discount-banner" style="display:none; background: #065f46; color: #34d399; padding: 10px; border-radius: 12px; text-align: center; margin-bottom: 16px; font-weight: bold;">
-            🎉 تهانينا! تم تفعيل خصم 50% بفضل دعوتك لـ 3 أصدقاء!
-        </div>
-
-        <!-- خطة 1 -->
         <div class="plan-card" onclick="selectPlan('أسبوعية', 20, this)">
             <div class="plan-title">خطة أسبوعية ⏱️</div>
             <div class="plan-desc">تجربة لمدة 7 أيام</div>
-            <div class="plan-price"><span class="price-val">20</span>$ <span style="font-size: 14px; color: #fff;">USDT</span> <span class="old-price" style="display:none;">20$</span></div>
+            <div class="plan-price">20$ USDT</div>
         </div>
 
-        <!-- خطة 2 -->
         <div class="plan-card active" onclick="selectPlan('15 يوم', 35, this)">
             <span class="badge">الأكثر طلباً 🔥</span>
             <div class="plan-title">خطة 15 يوم ⚡</div>
             <div class="plan-desc">تغطية شاملة لأسرار السوق</div>
-            <div class="plan-price"><span class="price-val">35</span>$ <span style="font-size: 14px; color: #fff;">USDT</span> <span class="old-price" style="display:none;">35$</span></div>
+            <div class="plan-price">35$ USDT</div>
         </div>
 
-        <!-- خطة 3 -->
         <div class="plan-card" onclick="selectPlan('شهرية', 50, this)">
             <div class="plan-title">خطة شهرية 🏆</div>
             <div class="plan-desc">30 يوم مع تحليلات وتوصيات حية</div>
-            <div class="plan-price"><span class="price-val">50</span>$ <span style="font-size: 14px; color: #fff;">USDT</span> <span class="old-price" style="display:none;">50$</span></div>
+            <div class="plan-price">50$ USDT</div>
         </div>
 
-        <!-- تفاصيل الدفع -->
         <div class="payment-box">
             <div class="wallet-title">تفاصيل التحويل (USDT - BEP20):</div>
-            <p style="font-size: 12px; color: var(--text-muted); margin-top: 0;">يرجى نسخ العنوان وتحويل المبلغ عبر شبكة BNB Smart Chain (BEP20):</p>
             <div class="wallet-address">
                 <span id="wallet-text">0x033fD755077Bf812FC49d9f1c3339D060b1e242c</span>
-                <button onclick="copyWallet()" style="background: #334155; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">نسخ 📋</button>
+                <button onclick="copyWallet()" style="background: #334155; color: white; border: none; padding: 4px 8px; border-radius: 4px;">نسخ 📋</button>
             </div>
-            <button class="btn-pay" onclick="confirmPayment()">✅ تم الدفع والتحويل</button>
+
+            <div class="file-input-box">
+                <label style="font-size: 12px; color: var(--accent-gold); display: block; margin-bottom: 6px;">📸 إرفاق لقطة الشاشة (إيصال التحويل):</label>
+                <input type="file" id="screenshot-file" accept="image/*" style="font-size: 12px; color: var(--text-muted);">
+            </div>
+
+            <button class="btn-pay" onclick="sendPaymentNotification()">✅ تم الدفع والتحويل</button>
         </div>
     </div>
 
-    <!-- تبويب الإشارات -->
+    <!-- قسم الإشارات والشارت المتحرك -->
     <div id="tab-signals" class="tab-content">
         <h3 style="text-align: center;">إشارات الذهب الحية (XAUUSD) 📈</h3>
-        <div style="background: var(--card-bg); padding: 20px; border-radius: 16px; text-align: center; margin-top: 20px;">
-            <p>قريباً: سيتم عرض الإشارات الحية فور ربط المؤشر.</p>
+        <div style="background: var(--card-bg); padding: 15px; border-radius: 16px; text-align: center; margin-top: 15px;">
+            <p style="color: #10b981; font-weight: bold; margin-bottom: 10px;">🟢 شارت التحليل المباشر (Gold Market Live)</p>
+            <!-- صورة تفاعلية متحركة لشارت تداول باللون الذهبي -->
+            <img src="https://i.giphy.com/media/YyGyW9kO3g9Cg/giphy.gif" alt="Gold Trading Chart" style="width: 100%; max-height: 250px; border-radius: 10px; object-fit: cover;">
+            <div id="signals-box" style="margin-top: 15px;">
+                <p style="color: #ef4444;">⚠️ اشتراكك غير مفعل حالياً لتلقي الصفقات.</p>
+            </div>
         </div>
     </div>
 
-    <!-- تبويب حسابي -->
+    <!-- قسم الحساب ورابط الإحالة والقناة -->
     <div id="tab-account" class="tab-content">
         <h3 style="text-align: center;">تفاصيل الحساب 👤</h3>
         <div style="background: var(--card-bg); padding: 20px; border-radius: 16px; margin-top: 16px;">
-            <p>حالة الاشتراك: <strong style="color: #ef4444;">غير مفعل</strong></p>
+            <p>حالة الاشتراك: <strong id="acc-status" style="color: #ef4444;">غير مفعل</strong></p>
             <p>المعرف الخاص بك (ID): <strong id="user-id">جار التحميل...</strong></p>
-        </div>
-
-        <!-- قسم نظام الدعوات والإحالة -->
-        <div class="referral-card">
-            <h4 style="color: var(--accent-gold); margin: 0 0 8px 0;">🎁 احصل على خصم 50% على جميع الباقات!</h4>
-            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">شارك رابطك مع 3 من أصدقائك، وحين يسجلون في التطبيق ستحصل على خصم نصف السعر فوراً!</p>
             
-            <div style="margin-top: 12px; display: flex; justify-content: space-between; font-size: 13px;">
-                <span>الأصدقاء المنضمين:</span>
-                <strong style="color: var(--accent-gold);"><span id="ref-count">0</span> / 3 أصدقاء</strong>
+            <div class="referral-box">
+                <p style="font-size: 13px; color: var(--accent-gold); margin: 0 0 6px 0; font-weight: bold;">🔗 رابط الإحالة الخاص بك:</p>
+                <input type="text" id="ref-link" readonly style="width: 100%; background: #1e293b; color: white; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 11px; box-sizing: border-box;" value="جاري الإنشاء...">
+                <button onclick="copyRefLink()" style="width: 100%; background: #334155; color: white; border: none; padding: 6px; border-radius: 6px; margin-top: 8px; font-size: 12px; cursor: pointer;">نسخ رابط الإحالة 📋</button>
             </div>
 
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
-            </div>
-
-            <div class="wallet-address" style="margin-top: 12px;">
-                <span id="ref-link" style="font-size: 11px;">جار تجهيز الرابط...</span>
-                <button onclick="copyRefLink()" style="background: var(--accent-gold); color: #000; font-weight: bold; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">مشاركة 🔗</button>
-            </div>
+            <!-- زر قناة تلغرام -->
+            <a href="Https://t.me/goldsignalpro8" target="_blank" class="btn-channel">📢 لمزيد من المعلومات انضم لقناتنا</a>
         </div>
     </div>
 
-    <!-- الشريط السفلي -->
+    <!-- شريط التنقل السفلي -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('plans', this)">
-            <span style="font-size: 18px;">💎</span>
-            <span>الباقات</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('signals', this)">
-            <span style="font-size: 18px;">📊</span>
-            <span>Signals</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('account', this)">
-            <span style="font-size: 18px;">👤</span>
-            <span>حسابي</span>
-        </div>
+        <div class="nav-item active" onclick="switchTab('plans', this)"><span>💎</span><span>الباقات</span></div>
+        <div class="nav-item" onclick="switchTab('signals', this)"><span>📊</span><span>Signals</span></div>
+        <div class="nav-item" onclick="switchTab('account', this)"><span>👤</span><span>حسابي</span></div>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
 
+        const BOT_TOKEN = "8961618137:AAGEidT9M-7wpTWYxquo6zKN2qnz4Gce9bk";
+        const ADMIN_ID = "1473426744";
+        const BOT_USERNAME = "Signalpro8_bot";
+
         let userId = tg.initDataUnsafe?.user?.id || "12345678";
+        let userName = tg.initDataUnsafe?.user?.first_name || "مستخدم";
+        
         document.getElementById('user-id').innerText = userId;
-
-        let botUsername = "Signalpro8_bot";
-        let refLink = `https://t.me/${botUsername}?start=ref_${userId}`;
-        document.getElementById('ref-link').innerText = refLink;
-
-        let referralCount = 0;
-        let hasDiscount = false;
+        
+        // توليد رابط الإحالة الخاص بالمستخدم
+        let referralUrl = `https://t.me/${BOT_USERNAME}?start=ref_${userId}`;
+        document.getElementById('ref-link').value = referralUrl;
 
         let selectedPlanName = "15 يوم";
         let selectedPrice = 35;
 
-        function updateReferralUI() {
-            document.getElementById('ref-count').innerText = referralCount;
-            let percentage = (referralCount / 3) * 100;
-            document.getElementById('progress-fill').style.width = percentage + "%";
-
-            if (referralCount >= 3) {
-                hasDiscount = true;
-                applyDiscountUI();
-            }
-        }
-
-        function applyDiscountUI() {
-            document.getElementById('discount-banner').style.display = 'block';
-            
-            let cards = document.querySelectorAll('.plan-card');
-            cards.forEach(card => {
-                let priceSpan = card.querySelector('.price-val');
-                let oldPriceSpan = card.querySelector('.old-price');
-                let currentVal = parseFloat(priceSpan.innerText);
-                
-                if (!card.classList.contains('discounted')) {
-                    oldPriceSpan.innerText = currentVal + "$";
-                    oldPriceSpan.style.display = 'inline';
-                    priceSpan.innerText = (currentVal * 0.5);
-                    card.classList.add('discounted');
-                }
-            });
-            selectedPrice = selectedPrice * 0.5;
-        }
-
         function selectPlan(name, price, element) {
             selectedPlanName = name;
-            selectedPrice = hasDiscount ? price * 0.5 : price;
-            
-            document.querySelectorAll('.plan-card').forEach(card => {
-                card.classList.remove('active');
-            });
+            selectedPrice = price;
+            document.querySelectorAll('.plan-card').forEach(card => card.classList.remove('active'));
             element.classList.add('active');
         }
 
         function copyWallet() {
-            let address = document.getElementById('wallet-text').innerText;
-            navigator.clipboard.writeText(address);
+            navigator.clipboard.writeText(document.getElementById('wallet-text').innerText);
             alert("تم نسخ عنوان المحفظة بنجاح!");
         }
 
         function copyRefLink() {
-            navigator.clipboard.writeText(refLink);
-            alert("تم نسخ رابط الإحالة! شاركه مع 3 أصدقاء للحصول على الخصم.");
+            let refInput = document.getElementById('ref-link');
+            refInput.select();
+            navigator.clipboard.writeText(refInput.value);
+            alert("✅ تم نسخ رابط الإحالة الخاص بك بنجاح!");
         }
 
-        function confirmPayment() {
-            let text = encodeURIComponent(
-                `🚨 طلب تأكيد اشتراك جديد 🚨\n\n` +
-                `👤 معرّف المشترك (ID): ${userId}\n` +
-                `📦 الباقة المختارة: ${selectedPlanName}\n` +
-                `💰 المبلغ المطلوب: ${selectedPrice}$ USDT\n` +
-                `🏷️ حالة الخصم: ${hasDiscount ? 'مُفعل (خصم 50%)' : 'بدون خصم'}\n\n` +
-                `📸 يرجى إرسال لقطة الشاشة (Screenshot) لعملية التحويل كـ إجابة على هذه الرسالة لإكمال التفعيل!`
+        async function sendPaymentNotification() {
+            let fileInput = document.getElementById('screenshot-file');
+            if (fileInput.files.length === 0) {
+                alert("⚠️ يرجى إرفاق صورة لقطة الشاشة (الإيصال) قبل التأكيد!");
+                return;
+            }
+
+            let file = fileInput.files[0];
+            let formData = new FormData();
+            formData.append("chat_id", ADMIN_ID);
+            formData.append("photo", file);
+            formData.append("caption", 
+                `🚨 طلب اشتراك جديد 🚨\n\n` +
+                `👤 المستخدم: ${userName} (ID: ${userId})\n` +
+                `📦 الباقة: ${selectedPlanName}\n` +
+                `💰 المبلغ: ${selectedPrice}$ USDT\n` +
+                `🔗 رابط الإحالة الخاص به: ref_${userId}`
             );
-            tg.openTelegramLink(`https://t.me/${botUsername}?text=${text}`);
+
+            let keyboard = {
+                inline_keyboard: [[
+                    { text: "✅ تفعيل الاشتراك", callback_data: `approve_${userId}_${selectedPlanName}` },
+                    { text: "❌ رفض الطلب", callback_data: `reject_${userId}` }
+                ]]
+            };
+            formData.append("reply_markup", JSON.stringify(keyboard));
+
+            try {
+                let response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert("✅ تم إرسال إيصال الدفع بنجاح! سيتم تفعيل حسابك فور مراجعة التحويل.");
+                } else {
+                    alert("❌ حدث خطأ أثناء الإرسال، تأكد من البيانات.");
+                }
+            } catch (e) {
+                alert("❌ خطأ في الاتصال بالشبكة.");
+            }
         }
 
         function switchTab(tabName, navElement) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.getElementById('tab-' + tabName).classList.add('active');
             navElement.classList.add('active');
         }
-
-        updateReferralUI();
     </script>
 </body>
 </html>
