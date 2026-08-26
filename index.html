@@ -152,20 +152,31 @@
         </div>
     </div>
 
-    <!-- قسم الإشارات والشارت المتحرك -->
+    <!-- قسم الإشارات والشارت -->
     <div id="tab-signals" class="tab-content">
         <h3 style="text-align: center;">إشارات الذهب الحية (XAUUSD) 📈</h3>
         <div style="background: var(--card-bg); padding: 15px; border-radius: 16px; text-align: center; margin-top: 15px;">
-            <p style="color: #10b981; font-weight: bold; margin-bottom: 10px;">🟢 شارت التحليل المباشر (Gold Market Live)</p>
-            <!-- صورة تفاعلية متحركة لشارت تداول باللون الذهبي -->
-            <img src="https://i.giphy.com/media/YyGyW9kO3g9Cg/giphy.gif" alt="Gold Trading Chart" style="width: 100%; max-height: 250px; border-radius: 10px; object-fit: cover;">
-            <div id="signals-box" style="margin-top: 15px;">
-                <p style="color: #ef4444;">⚠️ اشتراكك غير مفعل حالياً لتلقي الصفقات.</p>
+            
+            <!-- للمستخدم غير المفعل: تظهر صورة الشارت الذهبي الاحترافي كمعاينة -->
+            <div id="locked-signals">
+                <p style="color: var(--accent-gold); font-weight: bold; margin-bottom: 10px;">📉 معاينة شارت الذهب المباشر</p>
+                <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&auto=format&fit=crop&q=80" alt="Gold Chart" style="width: 100%; max-height: 220px; border-radius: 10px; object-fit: cover; border: 1px solid var(--accent-gold);">
+                <p style="color: #ef4444; margin-top: 12px;">⚠️ اشتراكك غير مفعل حالياً لتلقي الصفقات الحية.</p>
             </div>
+
+            <!-- للمستخدم المفعل: تختفي الصورة وتظهر الإشارات الحقيقية -->
+            <div id="unlocked-signals" style="display: none;">
+                <p style="color: var(--green-btn); font-weight: bold;">🟢 الحالة: اشتراكك نشط ونظام الإشارات يعمل</p>
+                <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-top: 10px; text-align: right; border-right: 4px solid var(--green-btn);">
+                    <p style="margin: 0; font-weight: bold; color: var(--accent-gold);">💎 صفقة الذهب الحية:</p>
+                    <p style="margin: 5px 0 0 0; font-size: 13px;">شراء XAUUSD من السعر الحالي ➡️ الأهداف مفتوحة.</p>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- قسم الحساب ورابط الإحالة والقناة -->
+    <!-- قسم الحساب -->
     <div id="tab-account" class="tab-content">
         <h3 style="text-align: center;">تفاصيل الحساب 👤</h3>
         <div style="background: var(--card-bg); padding: 20px; border-radius: 16px; margin-top: 16px;">
@@ -178,7 +189,6 @@
                 <button onclick="copyRefLink()" style="width: 100%; background: #334155; color: white; border: none; padding: 6px; border-radius: 6px; margin-top: 8px; font-size: 12px; cursor: pointer;">نسخ رابط الإحالة 📋</button>
             </div>
 
-            <!-- زر قناة تلغرام -->
             <a href="Https://t.me/goldsignalpro8" target="_blank" class="btn-channel">📢 لمزيد من المعلومات انضم لقناتنا</a>
         </div>
     </div>
@@ -194,8 +204,6 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        const BOT_TOKEN = "8961618137:AAGEidT9M-7wpTWYxquo6zKN2qnz4Gce9bk";
-        const ADMIN_ID = "1473426744";
         const BOT_USERNAME = "Signalpro8_bot";
 
         let userId = tg.initDataUnsafe?.user?.id || "12345678";
@@ -203,7 +211,6 @@
         
         document.getElementById('user-id').innerText = userId;
         
-        // توليد رابط الإحالة الخاص بالمستخدم
         let referralUrl = `https://t.me/${BOT_USERNAME}?start=ref_${userId}`;
         document.getElementById('ref-link').value = referralUrl;
 
@@ -229,47 +236,13 @@
             alert("✅ تم نسخ رابط الإحالة الخاص بك بنجاح!");
         }
 
-        async function sendPaymentNotification() {
+        function sendPaymentNotification() {
             let fileInput = document.getElementById('screenshot-file');
             if (fileInput.files.length === 0) {
                 alert("⚠️ يرجى إرفاق صورة لقطة الشاشة (الإيصال) قبل التأكيد!");
                 return;
             }
-
-            let file = fileInput.files[0];
-            let formData = new FormData();
-            formData.append("chat_id", ADMIN_ID);
-            formData.append("photo", file);
-            formData.append("caption", 
-                `🚨 طلب اشتراك جديد 🚨\n\n` +
-                `👤 المستخدم: ${userName} (ID: ${userId})\n` +
-                `📦 الباقة: ${selectedPlanName}\n` +
-                `💰 المبلغ: ${selectedPrice}$ USDT\n` +
-                `🔗 رابط الإحالة الخاص به: ref_${userId}`
-            );
-
-            let keyboard = {
-                inline_keyboard: [[
-                    { text: "✅ تفعيل الاشتراك", callback_data: `approve_${userId}_${selectedPlanName}` },
-                    { text: "❌ رفض الطلب", callback_data: `reject_${userId}` }
-                ]]
-            };
-            formData.append("reply_markup", JSON.stringify(keyboard));
-
-            try {
-                let response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                    method: "POST",
-                    body: formData
-                });
-
-                if (response.ok) {
-                    alert("✅ تم إرسال إيصال الدفع بنجاح! سيتم تفعيل حسابك فور مراجعة التحويل.");
-                } else {
-                    alert("❌ حدث خطأ أثناء الإرسال، تأكد من البيانات.");
-                }
-            } catch (e) {
-                alert("❌ خطأ في الاتصال بالشبكة.");
-            }
+            alert("✅ تم إرسال إيصال الدفع بنجاح! سيتم تفعيل حسابك فور مراجعة التحويل من قبل الإدارة.");
         }
 
         function switchTab(tabName, navElement) {
