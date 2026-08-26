@@ -95,7 +95,7 @@
             background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-top: 12px;
         }
 
-        /* حاوية الشارت التفاعلي 3D */
+        /* حاوية الشارت التفاعلي */
         .card-3d-container {
             perspective: 1000px;
             width: 100%;
@@ -125,13 +125,14 @@
             position: absolute;
             top: 10px;
             right: 12px;
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.9);
             border: 1px solid var(--accent-gold);
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 12px;
             color: var(--accent-gold);
             font-weight: bold;
+            z-index: 10;
         }
 
         .bottom-nav {
@@ -144,6 +145,15 @@
         .nav-item.active { color: var(--accent-gold); font-weight: bold; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+
+        .custom-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: var(--card-bg); padding: 20px; border-radius: 16px; width: 85%; max-width: 320px;
+            text-align: center; border: 1px solid var(--accent-gold);
+        }
     </style>
 </head>
 <body>
@@ -188,7 +198,18 @@
                 <input type="file" id="screenshot-file" accept="image/*" style="font-size: 12px; color: var(--text-muted);">
             </div>
 
-            <button class="btn-pay" onclick="sendPaymentNotification()">✅ تم الدفع والتحويل</button>
+            <button class="btn-pay" onclick="openPaymentModal()">✅ تم الدفع والتحويل</button>
+        </div>
+    </div>
+
+    <!-- نافذة منبثقة آمنة للتوجيه للبوت -->
+    <div id="paymentModal" class="custom-modal">
+        <div class="modal-content">
+            <h3 style="color: var(--accent-gold); margin-top: 0;">خطوة أخيرة 🚀</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">تم اختيار الباقة. اضغط أدناه لفتح محادثة البوت وإرسال صورة الإيصال ليتم إرسال كود التفعيل الخاص بك:</p>
+            <p style="font-size: 12px; background: #0f172a; padding: 8px; border-radius: 6px; color: var(--accent-gold);" id="modal-user-id-text">معرفك: جاري التحميل...</p>
+            <button onclick="goToBotChat()" style="width: 100%; background: #2563eb; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">الانتقال لبوت التليجرام ✈️</button>
+            <button onclick="closeModal()" style="width: 100%; background: #334155; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 8px;">إلغاء</button>
         </div>
     </div>
 
@@ -197,7 +218,7 @@
         <h3 style="text-align: center;">إشارات الذهب الحية (XAUUSD) 📈</h3>
         <div style="background: var(--card-bg); padding: 15px; border-radius: 16px; text-align: center; margin-top: 15px;">
             
-            <!-- للمستخدم غير المفعل: يظهر الشارت التفاعلي المتحرك مع عبارة حسابك غير مفعل -->
+            <!-- للمستخدم غير المفعل -->
             <div id="locked-signals">
                 <p style="color: var(--accent-gold); font-weight: bold; margin-bottom: 10px;">📉 شارت الذهب المباشر (XAUUSD)</p>
                 
@@ -208,14 +229,14 @@
                     </div>
                 </div>
 
-                <p style="color: #ef4444; margin-top: 12px; font-size: 13px;">⚠️ اشتراكك غير مفعل حالياً لتلقي الصفقات الحية. يرجى تفعيل حسابك من قسم (حسابي).</p>
+                <p style="color: #ef4444; margin-top: 12px; font-size: 13px;">⚠️ اشتراكك غير مفعل حالياً لتلقي الصفقات الحية. يرجى تفعيل حسابك بالكود المقدم من الإدارة من قسم (حسابي).</p>
             </div>
 
-            <!-- للمستخدم المفعل: تختفي الشاشة وتظهر الإشارات الحقيقية -->
+            <!-- للمستخدم المفعل -->
             <div id="unlocked-signals" style="display: none;">
                 <p style="color: var(--green-btn); font-weight: bold;">🟢 الحالة: اشتراكك نشط ونظام الإشارات يعمل</p>
                 <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-top: 10px; text-align: right; border-right: 4px solid var(--green-btn);">
-                    <p style="margin: 0; font-weight: bold; color: var(--accent-gold);">💎 صفقة الذهب الحية:</p>
+                    <p style="margin: 0; font-weight: bold; color: var(--accent-gold);" id="active-plan-badge">💎 صفقة الذهب الحية (الباقة المفعلة):</p>
                     <p style="margin: 5px 0 0 0; font-size: 13px;">شراء XAUUSD من السعر الحالي ➡️ الأهداف مفتوحة.</p>
                 </div>
             </div>
@@ -230,10 +251,10 @@
             <p>حالة الاشتراك: <strong id="acc-status" style="color: #ef4444;">غير مفعل ❌</strong></p>
             <p>المعرف الخاص بك (ID): <strong id="user-id">جار التحميل...</strong></p>
             
-            <!-- قسم إدخال كود التفعيل -->
+            <!-- قسم إدخال كود التفعيل اليدوي من الإدارة -->
             <div style="background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-top: 15px;">
-                <p style="font-size: 13px; color: var(--accent-gold); margin: 0 0 6px 0; font-weight: bold;">🔑 أدخل كود التفعيل الخاص بك:</p>
-                <input type="text" id="activation-code" placeholder="أدخل الكود هنا..." style="width: 100%; background: #1e293b; color: white; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 13px; box-sizing: border-box; text-align: center;">
+                <p style="font-size: 13px; color: var(--accent-gold); margin: 0 0 6px 0; font-weight: bold;">🔑 أدخل كود التفعيل المقدم من الإدارة:</p>
+                <input type="text" id="activation-code" placeholder="مثال: Gold8 أو Admiral" style="width: 100%; background: #1e293b; color: white; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 13px; box-sizing: border-box; text-align: center; text-transform: uppercase;">
                 <button onclick="activateAccount()" style="width: 100%; background: var(--green-btn); color: white; border: none; padding: 8px; border-radius: 6px; margin-top: 8px; font-size: 13px; font-weight: bold; cursor: pointer;">تفعيل الحساب الآن ⚡</button>
             </div>
 
@@ -259,18 +280,27 @@
         tg.expand();
 
         const BOT_USERNAME = "Signalpro8_bot";
-        const ADMIN_SECRET_CODE = "GOLD-2026"; 
-
+        
         let userId = tg.initDataUnsafe?.user?.id || "12345678";
         let userName = tg.initDataUnsafe?.user?.first_name || "مستخدم";
         
         document.getElementById('user-id').innerText = userId;
+        document.getElementById('modal-user-id-text').innerText = "معرفك الشخصي (ID): " + userId;
         
         let referralUrl = `https://t.me/${BOT_USERNAME}?start=ref_${userId}`;
         document.getElementById('ref-link').value = referralUrl;
 
         let selectedPlanName = "15 يوم";
         let selectedPrice = 35;
+
+        // 📋 [قاعدة بيانات الأكواد الخاصة بك كأدمن]
+        // يمكنك إضافة أو تغيير الأكواد والأسماء هنا بسهولة متناهية:
+        const adminCodes = {
+            "GOLD8": "الباقة الأسبوعية (7 أيام)",
+            "ADMIRAL": "باقة 15 يوم المميزة",
+            "VIPGOLD": "الباقة الشهرية (30 يوم)",
+            "TEST100": "تجربة مجانية للأعضاء الجدد"
+        };
 
         function selectPlan(name, price, element) {
             selectedPlanName = name;
@@ -291,35 +321,50 @@
             alert("✅ تم نسخ رابط الإحالة الخاص بك بنجاح!");
         }
 
-        function sendPaymentNotification() {
+        function openPaymentModal() {
             let fileInput = document.getElementById('screenshot-file');
             if (fileInput.files.length === 0) {
                 alert("⚠️ يرجى إرفاق صورة لقطة الشاشة (الإيصال) قبل التأكيد!");
                 return;
             }
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
 
-            let telegramUrl = `https://t.me/${BOT_USERNAME}?start=pay_${userId}`;
-            
-            // استخدام واجهة تليجرام الرسمية لتوجيه المستخدم فوراً لمحادثة البوت
+        function closeModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        function goToBotChat() {
+            let chatUrl = `https://t.me/${BOT_USERNAME}`;
             if (tg && tg.openTelegramLink) {
-                tg.openTelegramLink(telegramUrl);
+                tg.openTelegramLink(chatUrl);
             } else {
-                window.location.href = telegramUrl;
+                window.location.href = chatUrl;
             }
         }
 
         function activateAccount() {
-            let enteredCode = document.getElementById('activation-code').value.trim();
-            if (enteredCode === ADMIN_SECRET_CODE) {
-                document.getElementById('acc-status').innerText = "مفعل نشط ✅";
+            let enteredCode = document.getElementById('activation-code').value.trim().toUpperCase();
+            
+            if (enteredCode === "") {
+                alert("⚠️ يرجى كتابة كود التفعيل أولاً.");
+                return;
+            }
+
+            // التحقق مما إذا كان الكود موجوداً في قائمة الأكواد التي أنشأتها أنت
+            if (adminCodes.hasOwnProperty(enteredCode)) {
+                let assignedPlan = adminCodes[enteredCode];
+
+                document.getElementById('acc-status').innerText = "مفعل نشط ✅ (" + assignedPlan + ")";
                 document.getElementById('acc-status').style.color = "var(--green-btn)";
                 
                 document.getElementById('locked-signals').style.display = "none";
                 document.getElementById('unlocked-signals').style.display = "block";
+                document.getElementById('active-plan-badge').innerText = "💎 صفقة الذهب الحية (" + assignedPlan + "):";
 
-                alert("🎉 تهانينا! تم تفعيل حسابك بنجاح. انتقل لتبويب Signals لرؤية الصفقات الحية.");
+                alert("🎉 تهانينا! تم تفعيل حسابك بنجاح عبر كود الإدارة (" + enteredCode + ").");
             } else {
-                alert("❌ كود التفعيل غير صحيح، يرجى التأكد من الكود المرسل من الإدارة.");
+                alert("❌ كود التفعيل غير صحيح! تأكد من الكود المرسل لك من الإدارة.");
             }
         }
 
@@ -330,7 +375,7 @@
             navElement.classList.add('active');
         }
 
-        // رسم شارت الذهب المتحرك الحقيقي بالشموع الذهبية
+        // رسم شارت الذهب المتحرك الحقيقي بالشموع والشبكة
         const canvas = document.getElementById('liveChart');
         const ctx = canvas.getContext('2d');
 
@@ -342,46 +387,49 @@
         resizeCanvas();
 
         let candles = [];
-        for(let i=0; i<30; i++) {
+        for(let i=0; i<35; i++) {
             candles.push({
-                x: i * 25 + 15,
-                y: 100 + Math.sin(i * 0.5) * 40,
-                high: 80 + Math.random() * 20,
-                low: 140 + Math.random() * 20,
-                color: Math.random() > 0.4 ? '#fbbf24' : '#10b981'
+                x: i * 22 + 15,
+                y: 110 + Math.sin(i * 0.4) * 35,
+                color: Math.random() > 0.3 ? '#fbbf24' : '#10b981'
             });
         }
 
         function drawChart() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#090d16';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+            for(let x = 0; x < canvas.width; x += 30) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+            }
+            for(let y = 0; y < canvas.height; y += 30) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+            }
             
-            // رسم خط الاتجاه (Trend Line)
             ctx.beginPath();
-            ctx.strokeStyle = '#fbbf24';
+            ctx.strokeStyle = 'rgba(251, 191, 36, 0.4)';
             ctx.lineWidth = 2;
             for(let i=0; i<candles.length; i++) {
                 let c = candles[i];
-                // حركة صعود وهبوط مستمرة
-                c.y += Math.sin(Date.now() * 0.003 + i) * 0.4;
+                c.y += Math.sin(Date.now() * 0.002 + i) * 0.3;
                 if(i === 0) ctx.moveTo(c.x, c.y);
                 else ctx.lineTo(c.x, c.y);
             }
             ctx.stroke();
 
-            // رسم الشموع اليابانية
             for(let i=0; i<candles.length; i++) {
                 let c = candles[i];
                 ctx.strokeStyle = c.color;
                 ctx.fillStyle = c.color;
                 ctx.lineWidth = 1.5;
 
-                // خط الفتيل (Wick)
                 ctx.beginPath();
-                ctx.moveTo(c.x, c.y - 15);
-                ctx.lineTo(c.x, c.y + 15);
+                ctx.moveTo(c.x, c.y - 18);
+                ctx.lineTo(c.x, c.y + 18);
                 ctx.stroke();
 
-                // جسم الشمعة
                 ctx.fillRect(c.x - 4, c.y - 8, 8, 16);
             }
 
@@ -389,7 +437,7 @@
         }
         drawChart();
 
-        // تأثير الحركة ثلاثية الأبعاد (3D Tilt Effect) للشارت
+        // تأثير الحركة ثلاثية الأبعاد (3D Tilt Effect)
         const card = document.getElementById('tiltCard');
         const wrapper = document.querySelector('.chart-wrapper');
 
@@ -397,13 +445,10 @@
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            
-            const rotateX = -((y - centerY) / centerY) * 12;
-            const rotateY = ((x - centerX) / centerX) * 12;
-            
+            const rotateX = -((y - centerY) / centerY) * 10;
+            const rotateY = ((x - centerX) / centerX) * 10;
             wrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
         });
 
