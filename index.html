@@ -95,16 +95,19 @@
             background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-top: 12px;
         }
 
-        /* الشارت الاحترافي */
+        /* الشارت والفيديو الاحترافي */
         .chart-box {
             width: 100%;
             height: 220px;
             border-radius: 12px;
             border: 1px solid var(--accent-gold);
-            background: #090d16;
+            background: #000;
             position: relative;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .chart-overlay-text {
@@ -208,9 +211,13 @@
             <div id="locked-signals">
                 <p style="color: var(--accent-gold); font-weight: bold; margin-bottom: 10px;">📉 شارت الذهب المباشر (XAUUSD)</p>
                 
+                <!-- حاوية الفيديو المتكرر بدلاً من الشارت الثابت -->
                 <div class="chart-box">
                     <div class="chart-overlay-text">⚠️ حسابك غير مفعل</div>
-                    <canvas id="liveChart" width="350" height="220"></canvas>
+                    <video autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover;">
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-stock-market-data-animation-42095-large.mp4" type="video/mp4">
+                        متصفحك لا يدعم عرض الفيديو.
+                    </video>
                 </div>
 
                 <p style="color: #ef4444; margin-top: 12px; font-size: 13px;">⚠️ اشتراكك غير مفعل حالياً لتلقي الصفقات الحية. يرجى تفعيل حسابك بالكود المقدم من الإدارة من قسم (حسابي).</p>
@@ -265,7 +272,6 @@
         }
 
         const BOT_USERNAME = "Signalpro8_bot";
-        
         let userId = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user.id : "1084981493";
         
         document.getElementById('user-id').innerText = userId;
@@ -311,10 +317,9 @@
             document.getElementById('paymentModal').style.display = 'none';
         }
 
-        // الحل الجذري والاحترافي للتوجيه وإغلاق Mini App للعودة للبوت مباشرة
         function goToBotChat() {
             if (tg) {
-                tg.close(); // يغلق التطبيق فوراً فيعود المستخدم مباشرة إلى شات البوت لإرسال الصورة
+                tg.close();
             } else {
                 window.location.href = `https://t.me/${BOT_USERNAME}`;
             }
@@ -325,7 +330,7 @@
             if (tg && tg.openTelegramLink) {
                 tg.openTelegramLink(channelUrl);
             } else {
-                window.open(channelUrl, '_blank');
+                window.open(channelUrl, '_blank5');
             }
         }
 
@@ -358,72 +363,7 @@
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.getElementById('tab-' + tabName).classList.add('active');
             navElement.classList.add('active');
-
-            if(tabName === 'signals') {
-                setTimeout(initChart, 100);
-            }
         }
-
-        // رسم شارت الذهب بدقة مع أبعاد مضمونة للعمل في متصفح التليجرام
-        function initChart() {
-            const canvas = document.getElementById('liveChart');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            
-            // ضبط أبعاد Canvas الحقيقية
-            canvas.width = canvas.parentElement.clientWidth || 350;
-            canvas.height = 220;
-
-            let candles = [];
-            for(let i = 0; i < 16; i++) {
-                candles.push({
-                    x: i * 20 + 20,
-                    open: 100 + Math.random() * 40,
-                    close: 100 + Math.random() * 40,
-                    high: 150,
-                    low: 80
-                });
-            }
-
-            function draw() {
-                ctx.fillStyle = '#090d16';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                // رسم الشبكة الخلفية
-                ctx.strokeStyle = '#1e293b';
-                ctx.lineWidth = 1;
-                for(let x = 0; x < canvas.width; x += 30) {
-                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-                }
-                for(let y = 0; y < canvas.height; y += 30) {
-                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-                }
-
-                // رسم الشموع اليابانية
-                candles.forEach((c, idx) => {
-                    let color = (idx % 2 === 0) ? '#fbbf24' : '#10b981';
-                    ctx.strokeStyle = color;
-                    ctx.fillStyle = color;
-
-                    // الفتيل
-                    ctx.beginPath();
-                    ctx.moveTo(c.x, 30);
-                    ctx.lineTo(c.x, 180);
-                    ctx.stroke();
-
-                    // الجسم
-                    let yPos = 60 + (idx % 3) * 20;
-                    ctx.fillRect(c.x - 5, yPos, 10, 40);
-                });
-            }
-
-            draw();
-        }
-
-        // تشغيل الشارت أول مرة
-        window.onload = function() {
-            initChart();
-        };
     </script>
 </body>
 </html>
