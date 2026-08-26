@@ -181,8 +181,8 @@
                 <p style="color: var(--accent-gold); font-weight: bold; margin-bottom: 10px;">📉 معاينة شارت الذهب المباشر</p>
                 
                 <div class="card-3d-container" id="tiltCard">
-                    <!-- رابط صورتك الجديدة -->
-                    <img src="image.png" alt="Gold 3D Clock Chart" class="img-3d" id="targetImg">
+                    <!-- رابط موثوق ومباشر للصورة لضمان ظهورها وعدم كسرها -->
+                    <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&auto=format&fit=crop&q=80" alt="Gold 3D Clock Chart" class="img-3d" id="targetImg">
                 </div>
 
                 <p style="color: #ef4444; margin-top: 12px;">⚠️ اشتراكك غير مفعل حالياً لتلقي الصفقات الحية. يرجى تفعيل حسابك من قسم (حسابي).</p>
@@ -220,7 +220,7 @@
                 <button onclick="copyRefLink()" style="width: 100%; background: #334155; color: white; border: none; padding: 6px; border-radius: 6px; margin-top: 8px; font-size: 12px; cursor: pointer;">نسخ رابط الإحالة 📋</button>
             </div>
 
-            <a href="Https://t.me/goldsignalpro8" target="_blank" class="btn-channel">📢 لمزيد من المعلومات انضم لقناتنا</a>
+            <a href="https://t.me/goldsignalpro8" target="_blank" class="btn-channel">📢 لمزيد من المعلومات انضم لقناتنا</a>
         </div>
     </div>
 
@@ -236,7 +236,7 @@
         tg.expand();
 
         const BOT_USERNAME = "Signalpro8_bot";
-        const ADMIN_SECRET_CODE = "GOLD-2026"; // هذا هو كود التفعيل الافتراضي الذي ترسله للمشتركين
+        const ADMIN_SECRET_CODE = "GOLD-2026"; 
 
         let userId = tg.initDataUnsafe?.user?.id || "12345678";
         let userName = tg.initDataUnsafe?.user?.first_name || "مستخدم";
@@ -276,15 +276,16 @@
             }
 
             let telegramUrl = `https://t.me/${BOT_USERNAME}?start=pay_${userId}`;
-            alert("✅ سيتم توجيهك الآن لمحادثة البوت. يرجى إرسال صورة الإيصال هناك لتستلم كود التفعيل.");
-            tg.openTelegramLink(telegramUrl);
+            
+            // استخدام الطريقة المضمونة لفتح رابط التليجرام وتحويل المستخدم
+            if (confirm("✅ سيتم توجيهك الآن لمحادثة البوت لإرسال الإيصال واستلام الكود. اضغط موافق للانتقال.")) {
+                window.open(telegramUrl, '_blank');
+            }
         }
 
-        // دالة تفعيل الحساب عبر الكود
         function activateAccount() {
             let enteredCode = document.getElementById('activation-code').value.trim();
             if (enteredCode === ADMIN_SECRET_CODE) {
-                // تفعيل واجهة المستخدم
                 document.getElementById('acc-status').innerText = "مفعل نشط ✅";
                 document.getElementById('acc-status').style.color = "var(--green-btn)";
                 
@@ -326,7 +327,6 @@
             img.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
         });
 
-        // دعم اللمس للأجهزة المحمولة
         card.addEventListener('touchmove', (e) => {
             const rect = card.getBoundingClientRect();
             const touch = e.touches[0];
