@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -5,59 +6,392 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gold Signals Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-gold: #fbbf24;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --green-btn: #10b981;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 16px;
+            padding-bottom: 80px;
+            direction: rtl;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            color: var(--accent-gold);
+            margin: 0 0 8px 0;
+            font-size: 24px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* الكروت */
+        .plan-card {
+            background: var(--card-bg);
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .plan-card.active {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+        }
+
+        .badge {
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: var(--accent-gold);
+            color: #000;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+
+        .plan-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .plan-desc {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .plan-price {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent-gold);
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-left: 8px;
+        }
+
+        .payment-box {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .wallet-title {
+            font-size: 14px;
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .wallet-address {
+            background: #0f172a;
+            border: 1px dashed #475569;
+            padding: 12px;
+            border-radius: 8px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-pay {
+            width: 100%;
+            background: var(--green-btn);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 16px;
+            cursor: pointer;
+        }
+
+        /* كود الاحالة */
+        .referral-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid var(--accent-gold);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .progress-bar {
+            background: #334155;
+            border-radius: 10px;
+            height: 10px;
+            width: 100%;
+            margin: 12px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: var(--accent-gold);
+            height: 100%;
+            width: 0%; /* سيتم تحكم به من خلال الكود */
+            transition: width 0.3s ease;
+        }
+
+        /* شريط التنقل السفلي */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e293b;
+            border-top: 1px solid #334155;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--accent-gold);
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h2>🏆 Gold Signals Pro</h2>
-            <p class="subtitle">تحليلات وإشارات الذهب الحية</p>
+
+    <div class="header">
+        <h1>Gold Signals Pro 🏆</h1>
+        <p>تحليلات وإشارات الذهب الحية</p>
+    </div>
+
+    <!-- تبويب الباقات -->
+    <div id="tab-plans" class="tab-content active">
+        <h3 style="text-align: center; margin-bottom: 16px;">اختر خطة الاشتراك المناسبة</h3>
+
+        <!-- banner خصم للإحالة -->
+        <div id="discount-banner" style="display:none; background: #065f46; color: #34d399; padding: 10px; border-radius: 12px; text-align: center; margin-bottom: 16px; font-weight: bold;">
+            🎉 تهانينا! تم تفعيل خصم 50% بفضل دعوتك لـ 3 أصدقاء!
         </div>
 
-        <!-- قسم اختيار الخطة -->
-        <div id="subscription-section" class="card">
-            <h3>اختر خطة الاشتراك المناسبة</h3>
+        <!-- خطة 1 -->
+        <div class="plan-card" onclick="selectPlan('أسبوعية', 20, this)">
+            <div class="plan-title">خطة أسبوعية ⏱️</div>
+            <div class="plan-desc">تجربة لمدة 7 أيام</div>
+            <div class="plan-price"><span class="price-val">20</span>$ <span style="font-size: 14px; color: #fff;">USDT</span> <span class="old-price" style="display:none;">20$</span></div>
+        </div>
+
+        <!-- خطة 2 -->
+        <div class="plan-card active" onclick="selectPlan('15 يوم', 35, this)">
+            <span class="badge">الأكثر طلباً 🔥</span>
+            <div class="plan-title">خطة 15 يوم ⚡</div>
+            <div class="plan-desc">تغطية شاملة لأسرار السوق</div>
+            <div class="plan-price"><span class="price-val">35</span>$ <span style="font-size: 14px; color: #fff;">USDT</span> <span class="old-price" style="display:none;">35$</span></div>
+        </div>
+
+        <!-- خطة 3 -->
+        <div class="plan-card" onclick="selectPlan('شهرية', 50, this)">
+            <div class="plan-title">خطة شهرية 🏆</div>
+            <div class="plan-desc">30 يوم مع تحليلات وتوصيات حية</div>
+            <div class="plan-price"><span class="price-val">50</span>$ <span style="font-size: 14px; color: #fff;">USDT</span> <span class="old-price" style="display:none;">50$</span></div>
+        </div>
+
+        <!-- تفاصيل الدفع -->
+        <div class="payment-box">
+            <div class="wallet-title">تفاصيل التحويل (USDT - BEP20):</div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 0;">يرجى نسخ العنوان وتحويل المبلغ عبر شبكة BNB Smart Chain (BEP20):</p>
+            <div class="wallet-address">
+                <span id="wallet-text">0x033fD755077Bf812FC49d9f1c3339D060b1e242c</span>
+                <button onclick="copyWallet()" style="background: #334155; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">نسخ 📋</button>
+            </div>
+            <button class="btn-pay" onclick="confirmPayment()">✅ تم الدفع والتحويل</button>
+        </div>
+    </div>
+
+    <!-- تبويب الإشارات -->
+    <div id="tab-signals" class="tab-content">
+        <h3 style="text-align: center;">إشارات الذهب الحية (XAUUSD) 📈</h3>
+        <div style="background: var(--card-bg); padding: 20px; border-radius: 16px; text-align: center; margin-top: 20px;">
+            <p>قريباً: سيتم عرض الإشارات الحية فور ربط المؤشر.</p>
+        </div>
+    </div>
+
+    <!-- تبويب حسابي -->
+    <div id="tab-account" class="tab-content">
+        <h3 style="text-align: center;">تفاصيل الحساب 👤</h3>
+        <div style="background: var(--card-bg); padding: 20px; border-radius: 16px; margin-top: 16px;">
+            <p>حالة الاشتراك: <strong style="color: #ef4444;">غير مفعل</strong></p>
+            <p>المعرف الخاص بك (ID): <strong id="user-id">جار التحميل...</strong></p>
+        </div>
+
+        <!-- قسم نظام الدعوات والإحالة -->
+        <div class="referral-card">
+            <h4 style="color: var(--accent-gold); margin: 0 0 8px 0;">🎁 احصل على خصم 50% على جميع الباقات!</h4>
+            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">شارك رابطك مع 3 من أصدقائك، وحين يسجلون في التطبيق ستحصل على خصم نصف السعر فوراً!</p>
             
-            <div class="plan-card" onclick="selectPlan('أسبوعي', 5, 7, this)">
-                <div class="plan-info">
-                    <h4>خطة أسبوعية ⏱</h4>
-                    <p class="desc">تجربة لمدة 7 أيام</p>
-                </div>
-                <div class="price">5$ <span>USDT</span></div>
+            <div style="margin-top: 12px; display: flex; justify-content: space-between; font-size: 13px;">
+                <span>الأصدقاء المنضمين:</span>
+                <strong style="color: var(--accent-gold);"><span id="ref-count">0</span> / 3 أصداقء</strong>
             </div>
 
-            <div class="plan-card recommended" onclick="selectPlan('15 يوم', 20, 15, this)">
-                <span class="badge">الأكثر طلباً🔥</span>
-                <div class="plan-info">
-                    <h4>خطة 15 يوم ⚡️</h4>
-                    <p class="desc">تغطية شاملة لأسرار السوق</p>
-                </div>
-                <div class="price">20$ <span>USDT</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
             </div>
 
-            <div class="plan-card" onclick="selectPlan('شهري', 25, 30, this)">
-                <div class="plan-info">
-                    <h4>خطة شهرية 🏆</h4>
-                    <p class="desc">30 يوم مع تحليلات وتوصيات حية</p>
-                </div>
-                <div class="price">25$ <span>USDT</span></div>
-            </div>
-
-            <!-- تفاصيل الدفع والتحويل -->
-            <div id="payment-details" class="payment-box" style="display:none;">
-                <h4>تفاصيل التحويل (USDT - BEP20):</h4>
-                <p class="instruction">يرجى نسخ العنوان وتحويل المبلغ عبر شبكة <b>BNB Smart Chain (BEP20)</b>:</p>
-                
-                <div class="wallet-box">
-                    <span id="wallet-addr">0x033fD755077Bf812FC49d9f1c3339D060b1e242c</span>
-                    <button onclick="copyWallet()" class="btn-copy">📋 نسخ</button>
-                </div>
-
-                <button onclick="confirmPayment()" class="btn-confirm">✅ تم الدفع والتحويل</button>
+            <div class="wallet-address" style="margin-top: 12px;">
+                <span id="ref-link" style="font-size: 11px;">جار تجهيز الرابط...</span>
+                <button onclick="copyRefLink()" style="background: var(--accent-gold); color: #000; font-weight: bold; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">مشاركة 🔗</button>
             </div>
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- الشريط السفلي -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('plans', this)">
+            <span style="font-size: 18px;">💎</span>
+            <span>الباقات</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('signals', this)">
+            <span style="font-size: 18px;">📊</span>
+            <span>Signals</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('account', this)">
+            <span style="font-size: 18px;">👤</span>
+            <span>حسابي</span>
+        </div>
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let userId = tg.initDataUnsafe?.user?.id || "12345678";
+        document.getElementById('user-id').innerText = userId;
+
+        // إعداد رابط الإحالة
+        let botUsername = "Signalpro8_bot";
+        let refLink = `https://t.me/${botUsername}?start=ref_${userId}`;
+        document.getElementById('ref-link').innerText = refLink;
+
+        let referralCount = 0; // سيتم سحبه من السيرفر لاحقاً
+        let hasDiscount = false;
+
+        let selectedPlanName = "15 يوم";
+        let selectedPrice = 35;
+
+        function updateReferralUI() {
+            document.getElementById('ref-count').innerText = referralCount;
+            let percentage = (referralCount / 3) * 100;
+            document.getElementById('progress-fill').style.width = percentage + "%";
+
+            if (referralCount >= 3) {
+                hasDiscount = true;
+                applyDiscountUI();
+            }
+        }
+
+        function applyDiscountUI() {
+            document.getElementById('discount-banner').style.display = 'block';
+            
+            // خصم 50% على الأرقام
+            let cards = document.querySelectorAll('.plan-card');
+            cards.forEach(card => {
+                let priceSpan = card.querySelector('.price-val');
+                let oldPriceSpan = card.querySelector('.old-price');
+                let currentVal = parseFloat(priceSpan.innerText);
+                
+                if (!card.classList.contains('discounted')) {
+                    oldPriceSpan.innerText = currentVal + "$";
+                    oldPriceSpan.style.display = 'inline';
+                    priceSpan.innerText = (currentVal * 0.5);
+                    card.classList.add('discounted');
+                }
+            });
+            selectedPrice = selectedPrice * 0.5;
+        }
+
+        function selectPlan(name, price, element) {
+            selectedPlanName = name;
+            selectedPrice = hasDiscount ? price * 0.5 : price;
+            
+            document.querySelectorAll('.plan-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        function copyWallet() {
+            let address = document.getElementById('wallet-text').innerText;
+            navigator.clipboard.writeText(address);
+            alert("تم نسخ عنوان المحفظة بنجاح!");
+        }
+
+        function copyRefLink() {
+            navigator.clipboard.writeText(refLink);
+            alert("تم نسخ رابط الإحالة! شاركه مع 3 أصدقاء للحصول على الخصم.");
+        }
+
+        function confirmPayment() {
+            let text = encodeURIComponent(`مرحباً، لقد قمت بالتحويل لطلب اشتراك:\n- الخطة: ${selectedPlanName}\n- المبلغ المطلوب: ${selectedPrice}$ USDT\n- حالة الخصم: ${hasDiscount ? 'مُفعل (خصم 50%)' : 'بدون خصم'}`);
+            tg.openTelegramLink(`https://t.me/${botUsername}?text=${text}`);
+        }
+
+        function switchTab(tabName, navElement) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            document.getElementById('tab-' + tabName).classList.add('active');
+            navElement.classList.add('active');
+        }
+
+        // تشغيل البداية
+        updateReferralUI();
+    </script>
 </body>
 </html>
