@@ -2,8 +2,9 @@ import os
 import threading
 from flask import Flask
 import telebot
+from supabase import create_client, Client
 
-# 1. إنشاء سيرفر Flask وهمي لفتح المنفذ بسلام لـ Render
+# 1. إعداد سيرفر Flask للحفاظ على عمل البوت في Render
 app = Flask('')
 
 @app.route('/')
@@ -14,40 +15,59 @@ def run_flask():
     port = int(os.environ.get('PORT', 8080))
     app.run(host='0.0.0.0', port=port)
 
-# 2. كود البوت الأساسي
+# 2. إعداد المتغيرات والاتصال بـ Supabase
 TOKEN = os.environ.get('BOT_TOKEN')
-ADMIN_ID = int(os.environ.get('ADMIN_ID', 1084981493))
+ADMIN_ID = int(os.environ.get('ADMIN_ID', 0))
+SUPABASE_URL = os.environ.get('SUPABASE_URL')
+SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
 
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 bot = telebot.TeleBot(TOKEN)
 
+# 3. أوامر البوت
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "مرحباً بك في بوت Gold Signals Pro 🏆\nيرجى استخدام التطبيق لإتمام الاشتراك، وعند إرسال صورة الإيصال سيتم تحويلها للإدارة فوراً.")
-
-@bot.message_handler(content_types=['photo'])
-def handle_receipt(message):
-    user_id = message.from_user.id
-    user_name = message.from_user.first_name
-    username = message.from_user.username or "لا يوجد معرف"
-    
-    caption = (
-        f"🚨 **إشعار دفع جديد من مشترك!**\n\n"
-        f"👤 الاسم: {user_name}\n"
-        f"🔗 اليوزر: @{username}\n"
-        f"🆔 المعرف (ID): `{user_id}`\n\n"
-        f"💡 قم بمراجعة الإيصال وأرسل له كود التفعيل المناسب من التطبيق."
+    bot.reply_to(
+        message, 
+        "أهلاً بك! يرجى إرسال كود التفعيل الخاص بك لتفعيل الاشتراك."
     )
-    
-    try:
-        bot.forward_message(chat_id=ADMIN_ID, from_chat_id=message.chat.id, message_id=message.message_id)
-        bot.send_message(ADMIN_ID, caption, parse_mode="Markdown")
-        bot.reply_to(message, "✅ تم استلام إيصال الدفع بنجاح وتحويله للإدارة للمراجعة. سيتم إرسال كود التفعيل قريباً!")
-    except Exception as e:
-        print(f"Error: {e}")
 
-# 3. تشغيل السيرفر والبوت في نفس الوقت
+@bot.message_handler(func=lambda message: True)
+def handle_activation(message):
+    user_id = message.from_user.id
+    input_code = message.text.strip()
+
+    try:
+        # البحث عن الكود في جدول Supabase
+        response = supabase.table('activation_codes') \
+            .select('*') \
+            .eq('code', input_code) \
+            .execute()
+        
+        codes = response.data
+
+        if not codes:
+            bot.reply_to(message, "❌ هذا الكود غير صحيح، يرجى التأكد وإعادة المحاولة.")
+            return
+
+        code_data = codes[0]
+
+        if code_data.get('is_used'):
+            bot.reply_to(message, "⚠️ هذا الكود تم استخدامه من قبل وغير صالح للان الاستخدام.")
+            return
+
+        # تحديث الكود ليصبح مستخدماً وربطه بـ user_id
+        supabase.table('activation_codes') \
+            .update({'is_used': True, 'user_id': user_id}) \
+            .eq('code', input_code) \
+            .execute()
+
+        bot.reply_to(message, "✅ تم تفعيل اشتراكك بنجاح! مرحباً بك معنا.")
+
+    except Exception as e:
+        bot.reply_to(message, "حدث خطأ أثناء التفعيل، يرجى المحاولة لاحقاً.")
+
+# 4. تشغيل السيرفر والبوت
 if __name__ == '__main__':
-    t = threading.Thread(target=run_flask)
-    t.start()
-    print("Bot is running securely...")
-    bot.polling(none_stop=True)
+    threading.Thread(target=run_flask).start()
+    bot.infinity_polling()
