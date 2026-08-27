@@ -49,7 +49,7 @@ def handle_photo(message):
 @bot.message_handler(func=lambda message: True)
 def handle_activation(message):
     user_id = message.from_user.id
-    username = message.from_user.username or ""
+    username = message.username or ""
     full_name = message.from_user.full_name or ""
     input_code = message.text.strip()
     
@@ -82,8 +82,10 @@ def handle_activation(message):
         bot.reply_to(message, "✅ تم تفعيل اشتراكك بنجاح! أهلاً بك في القناة المدفوعة.")
         
     except Exception as e:
-        print(f"Activation Error: {e}")
-        bot.reply_to(message, "حدث خطأ أثناء التفعيل، يرجى المحاولة لاحقاً.")
+        # طباعة الخطأ بالكامل وإرساله لك على التلغرام لنعرف السبب الفعلي لو حدث أي استثناء
+        error_msg = str(e)
+        print(f"Activation Error: {error_msg}")
+        bot.reply_to(message, f"⚠️ خطأ تقني في قاعدة البيانات:\n{error_msg}")
 
 # 6. التشغيل المتزامن للبوت والسيرفر
 if __name__ == "__main__":
