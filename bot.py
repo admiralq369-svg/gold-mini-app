@@ -45,11 +45,11 @@ def handle_photo(message):
         print(f"Photo Error: {e}")
         bot.reply_to(message, "حدث خطأ أثناء إرسال الصورة، يرجى المحاولة لاحقاً.")
 
-# 5. معالجة النصوص (أكواد التفعيل مثل Test123)
-@bot.message_handler(func=lambda message: True)
+# 5. معالجة النصوص (أكواد التفعيل مثل Test123) بصورة صريحة
+@bot.message_handler(func=lambda message: message.text and not message.text.startswith('/'))
 def handle_activation(message):
     user_id = message.from_user.id
-    username = message.username or ""
+    username = message.from_user.username or ""
     full_name = message.from_user.full_name or ""
     input_code = message.text.strip()
     
@@ -82,7 +82,6 @@ def handle_activation(message):
         bot.reply_to(message, "✅ تم تفعيل اشتراكك بنجاح! أهلاً بك في القناة المدفوعة.")
         
     except Exception as e:
-        # طباعة الخطأ بالكامل وإرساله لك على التلغرام لنعرف السبب الفعلي لو حدث أي استثناء
         error_msg = str(e)
         print(f"Activation Error: {error_msg}")
         bot.reply_to(message, f"⚠️ خطأ تقني في قاعدة البيانات:\n{error_msg}")
