@@ -1,6 +1,20 @@
 import os
+import threading
+from flask import Flask
 import telebot
 
+# 1. إنشاء سيرفر Flask وهمي لفتح المنفذ بسلام لـ Render
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot is alive!"
+
+def run_flask():
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host='0.0.0.0', port=port)
+
+# 2. كود البوت الأساسي
 TOKEN = os.environ.get('BOT_TOKEN')
 ADMIN_ID = int(os.environ.get('ADMIN_ID', 1084981493))
 
@@ -31,5 +45,9 @@ def handle_receipt(message):
     except Exception as e:
         print(f"Error: {e}")
 
-print("Bot is running securely...")
-bot.polling(none_stop=True)
+# 3. تشغيل السيرفر والبوت في نفس الوقت
+if __name__ == '__main__':
+    t = threading.Thread(target=run_flask)
+    t.start()
+    print("Bot is running securely...")
+    bot.polling(none_stop=True)
