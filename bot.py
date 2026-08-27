@@ -4,7 +4,7 @@ from flask import Flask
 import telebot
 from supabase import create_client, Client
 
-# 1. إعداد سيرفر Flask للحفاظ على عمل البوت في Render
+# 1. إعداد سيرفر Flask
 app = Flask('')
 
 @app.route('/')
@@ -15,12 +15,13 @@ def run_flask():
     port = int(os.environ.get('PORT', 8080))
     app.run(host='0.0.0.0', port=port)
 
-# 2. إعداد المتغيرات والاتصال بـ Supabase
+# 2. قراءة المتغيرات
 TOKEN = os.environ.get('BOT_TOKEN')
-ADMIN_ID = int(os.environ.get('ADMIN_ID', 0))
-SUPABASE_URL = os.environ.get('SUPABASE_URL')
-SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
+ADMIN_ID = os.environ.get('ADMIN_ID', '0')
+SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
+SUPABASE_KEY = os.environ.get('SUPABASE_KEY', '')
 
+# إنشاء الاتصال بـ Supabase
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 bot = telebot.TeleBot(TOKEN)
 
@@ -38,7 +39,6 @@ def handle_activation(message):
     input_code = message.text.strip()
 
     try:
-        # البحث عن الكود في جدول Supabase
         response = supabase.table('activation_codes') \
             .select('*') \
             .eq('code', input_code) \
@@ -53,10 +53,9 @@ def handle_activation(message):
         code_data = codes[0]
 
         if code_data.get('is_used'):
-            bot.reply_to(message, "⚠️ هذا الكود تم استخدامه من قبل وغير صالح للان الاستخدام.")
+            bot.reply_to(message, "⚠️ هذا الكود تم استخدامه من قبل وغير صالح للإن الاستخدام.")
             return
 
-        # تحديث الكود ليصبح مستخدماً وربطه بـ user_id
         supabase.table('activation_codes') \
             .update({'is_used': True, 'user_id': user_id}) \
             .eq('code', input_code) \
@@ -67,7 +66,7 @@ def handle_activation(message):
     except Exception as e:
         bot.reply_to(message, "حدث خطأ أثناء التفعيل، يرجى المحاولة لاحقاً.")
 
-# 4. تشغيل السيرفر والبوت
+# 4. التشغيل
 if __name__ == '__main__':
     threading.Thread(target=run_flask).start()
     bot.infinity_polling()
